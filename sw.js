@@ -1,5 +1,5 @@
 /* Offline: hält alle Dateien eines App-Stands auf dem Gerät. VERSION und FILES setzt Scripts/bauen.py ein (wie beim Rechentiger). */
-const VERSION = '2026-11-01-b671885';
+const VERSION = '2026-11-01-0e25624';
 const FILES = [
   './',
   'app.js',

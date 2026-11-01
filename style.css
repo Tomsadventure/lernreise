@@ -113,12 +113,21 @@ b { font-weight: 800; }
 .neu-plus { display: grid; place-items: center; width: 84px; height: 84px; border-radius: 50%; background: var(--gruen); color: #fff; margin: 13px 0; box-shadow: 0 4px 0 var(--gruen-tief); }
 .neu-plus .ic { width: 40px; height: 40px; }
 .wer-fuss { font-size: 14px; font-weight: 700; color: var(--ink-soft); }
-.alter-wahl { display: flex; flex-wrap: wrap; gap: 8px; }
-.alter-wahl button { width: 54px; height: 54px; border-radius: 16px; background: var(--card); font-weight: 800; font-size: 22px; box-shadow: var(--lift-sm); }
+/* Profil anlegen/ändern: alles auf einer Seite ohne Scrollen (Wunsch des Benutzers, Foto vom iPad 2026-11-01):
+   Alter in einer Reihe, die 11 Tiere in 6 Spalten (2 Reihen), knappe Abstände */
+.alter-wahl { display: grid; grid-template-columns: repeat(7, minmax(0, 54px)); gap: 6px; }
+.alter-wahl button { height: 50px; border-radius: 14px; background: var(--card); font-weight: 800; font-size: 21px; box-shadow: var(--lift-sm); }
 .alter-wahl button.an { background: var(--gruen); color: #fff; box-shadow: 0 3px 0 var(--gruen-tief); }
-.avatar-wahl { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-.avatar-wahl button { border-radius: 50%; padding: 4px; background: var(--card); box-shadow: var(--lift-sm); aspect-ratio: 1; }
+.avatar-wahl { display: grid; grid-template-columns: repeat(6, minmax(0, 96px)); gap: 8px; }
+.avatar-wahl button { border-radius: 50%; padding: 3px; background: var(--card); box-shadow: var(--lift-sm); aspect-ratio: 1; }
 .avatar-wahl button.an { outline: 4px solid var(--gruen); outline-offset: 1px; }
+.sheet-profil .sheet-head { padding: 8px 0 0; }
+.sheet-profil .set-group { margin: 8px 0 12px; }
+.sheet-profil .set-group h3 { margin-bottom: 6px; }
+.sheet-profil .name-in { height: 50px; }
+.sheet-profil .set-note { font-size: 14px; margin: 6px 2px 0; }
+.sheet-profil .confirm-actions { margin: 10px 0 2px; }
+@media (min-width: 700px) { #sheet-root .sheet.sheet-profil { width: 660px; max-height: 96vh; } }
 
 /* ------------------------------------------------------------ Start */
 .hero {

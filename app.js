@@ -211,7 +211,7 @@ function profilSheetHTML() {
     </div>
   </div>`;
 }
-const stufeText = s => `Stufe «${stufeName(s)}» – ${K.STUFEN[s - 1].text}. Die Aufgaben passen dazu; man kann sie in den Einstellungen ändern.`;
+const stufeText = s => `Stufe «${stufeName(s)}» – ${K.STUFEN[s - 1].text}.`;
 function profilOeffnen(p) {
   profilEntwurf = p ? { id: p.id, name: p.name, alter: p.alter, avatar: p.avatar } : { id: null, name: '', alter: 7, avatar: AVATARE[S.profile.length % AVATARE.length][0] };
   openSheet('profil', profilSheetHTML());
@@ -1382,7 +1382,7 @@ window.addEventListener('resize', () => { if (view.name === 'buch' && !BK.busy &
 let sheetOpen = null;
 function openSheet(n, html) {
   sheetOpen = n;
-  sheetRoot.innerHTML = `<div class="sheet-bg" data-act="close-sheet"></div><div class="sheet" role="dialog" aria-modal="true">${html}</div>`;
+  sheetRoot.innerHTML = `<div class="sheet-bg" data-act="close-sheet"></div><div class="sheet sheet-${n}" role="dialog" aria-modal="true">${html}</div>`;
   requestAnimationFrame(() => sheetRoot.classList.add('open'));
 }
 function closeSheet(now) {
