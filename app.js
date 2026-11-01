@@ -16,7 +16,7 @@ const mix = (hex, to, t) => '#' + [1, 3, 5].map(i => {
 }).join('');
 const farben = f => `--f:${f};--f-hell:${mix(f, '#ffffff', 0.86)};--f-mitte:${mix(f, '#ffffff', 0.6)};--f-tief:${mix(f, '#000000', 0.28)}`;
 const AVATARE = [['fuchs', 'Fuchs'], ['igel', 'Igel'], ['eule', 'Eule'], ['hase', 'Hase'], ['eichhoernchen', 'Eichhörnchen'],
-  ['steinbock', 'Steinbock'], ['baer', 'Bär'], ['pinguin', 'Pinguin']];
+  ['steinbock', 'Steinbock'], ['baer', 'Bär'], ['pinguin', 'Pinguin'], ['frosch', 'Frosch'], ['tiger', 'Tiger'], ['panda', 'Panda']];
 const ALTER = [6, 7, 8, 9, 10, 11, 12];
 /* Sammelbuch (wie beim Rechentiger): Seite 0 = Umschlag, 1 = »Dieses Buch gehört«, 2 = Titelseite, dann 17 gemalte Doppelseiten
    (aus dem Rechentiger übernommen). Neue Seiten immer ans Ende, damit eingeklebte Sticker auf ihren Seiten bleiben. */

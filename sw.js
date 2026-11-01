@@ -1,5 +1,5 @@
 /* Offline: hält alle Dateien eines App-Stands auf dem Gerät. VERSION und FILES setzt Scripts/bauen.py ein (wie beim Rechentiger). */
-const VERSION = '2026-11-01-6f33ab3';
+const VERSION = '2026-11-01-b671885';
 const FILES = [
   './',
   'app.js',
@@ -515,11 +515,14 @@ const FILES = [
   'img/avatar_baer.webp',
   'img/avatar_eichhoernchen.webp',
   'img/avatar_eule.webp',
+  'img/avatar_frosch.webp',
   'img/avatar_fuchs.webp',
   'img/avatar_hase.webp',
   'img/avatar_igel.webp',
+  'img/avatar_panda.webp',
   'img/avatar_pinguin.webp',
   'img/avatar_steinbock.webp',
+  'img/avatar_tiger.webp',
   'img/banner_en.webp',
   'img/banner_es.webp',
   'img/banner_fr.webp',
