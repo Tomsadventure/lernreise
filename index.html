@@ -1,18 +1,37 @@
 <!doctype html>
 <html lang="de">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="robots" content="noindex, nofollow">
-<title>Lernreise</title>
-<style>
-  body { margin: 0; min-height: 100vh; display: grid; place-items: center; font-family: ui-rounded, system-ui, sans-serif;
-         background: linear-gradient(160deg, #FFF3CF, #CDEBB8); color: #1E2A20; text-align: center; }
-  h1 { font-size: 44px; margin: 0 0 8px; }
-  p { font-size: 20px; margin: 0; }
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="description" content="Lernreise mit Mungg, dem Murmeltier: Schweiz, Uhr und Kalender, Sprachen – für Kinder von 7 bis 11.">
+  <meta name="theme-color" content="#FFF6E6">
+  <meta name="color-scheme" content="light">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Lernreise">
+  <title>Lernreise</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="preload" href="fonts/Nunito-ExtraBold.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="img/mungg_hallo.webp" as="image">
+  <link rel="stylesheet" href="style.css?v=2026-11-01-6f33ab3">
+  <script>window.BUILD = '2026-11-01-6f33ab3';</script>
 </head>
 <body>
-  <main><h1>Lernreise</h1><p>Hier entsteht gerade die Lern-App. Bald geht’s los!</p></main>
+  <div id="app"></div>
+  <div id="sheet-root"></div>
+  <div id="fx" aria-hidden="true"></div>
+  <noscript><p style="padding:24px;font-family:sans-serif">Diese App braucht JavaScript.</p></noscript>
+  <script src="kern/lernen.js?v=2026-11-01-6f33ab3" defer></script>
+  <!-- Module: ein neues Modul = ein Ordner in module/ und eine Zeile hier (Reihenfolge = Reihenfolge auf der Startseite) -->
+  <script src="module/schweiz/karte.js?v=2026-11-01-6f33ab3" defer></script>
+  <script src="module/schweiz/schweiz.js?v=2026-11-01-6f33ab3" defer></script>
+  <script src="module/zeit/zeit.js?v=2026-11-01-6f33ab3" defer></script>
+  <script src="module/sprachen/sprachen.js?v=2026-11-01-6f33ab3" defer></script>
+  <script src="kern/ton.js?v=2026-11-01-6f33ab3" defer></script>
+  <script src="app.js?v=2026-11-01-6f33ab3" defer></script>
 </body>
 </html>
