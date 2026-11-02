@@ -1,33 +1,34 @@
-/* Modul «Sprachen»: Französisch, Englisch, Italienisch, Spanisch, Holländisch, Chinesisch, Japanisch – je die Zahlen 1 bis 10 und 20 erste Wörter.
+/* Modul «Sprachen»: Französisch, Englisch, Italienisch, Spanisch, Holländisch, Chinesisch, Japanisch, Ungarisch – je die Zahlen 1 bis 10 und 20 erste Wörter.
    Jede Sprache ist ein eigenes Thema mit eigenem Look und einem Freund, der die Wörter spricht:
-   Léo (Frosch, aus Wörtli-Frosch), Bao (Panda, aus Wörtli-Panda), Gina (Kätzchen), Pepe (Eselchen), Daan (Löwe), Long (Drache), Hiro (Shiba).
+   Léo (Frosch, aus Wörtli-Frosch), Bao (Panda, aus Wörtli-Panda), Gina (Kätzchen), Pepe (Eselchen), Daan (Löwe), Long (Drache), Hiro (Shiba), Bence (Puli).
    Die Bilder der Wörter (w_*) gelten für alle Sprachen. Töne: <sprache>_z_<n>, <sprache>_w_<wort> (Freund), sp_* und <sprache>_* (Mungg). */
 (function () {
   'use strict';
   const K = window.Kern;
-  /* Wort-Id, Deutsch, Französisch, Englisch, Italienisch, Spanisch, Holländisch, Chinesisch (Pinyin, Zeichen), Japanisch (Romaji, Kana)
+  /* Wort-Id, Deutsch, Französisch, Englisch, Italienisch, Spanisch, Holländisch, Chinesisch (Pinyin, Zeichen), Japanisch (Romaji, Kana),
+     Ungarisch (2026-11-02, ohne Artikel wie Englisch; «anya» statt «mama» – «mama» heisst auf Ungarisch Oma)
      Chinesisch und Japanisch (2026-11-02): angezeigt wird gross die Lautschrift, klein die Schrift; gesprochen wird die Schrift. */
   const WOERTER = [
-    ['hallo', 'Hallo', 'salut', 'hello', 'ciao', 'hola', 'hallo', 'nǐ hǎo', '你好', 'konnichiwa', 'こんにちは'],
-    ['guten_morgen', 'Guten Morgen', 'bonjour', 'good morning', 'buongiorno', 'buenos días', 'goedemorgen', 'zǎoshang hǎo', '早上好', 'ohayō', 'おはよう'],
-    ['gute_nacht', 'Gute Nacht', 'bonne nuit', 'good night', 'buonanotte', 'buenas noches', 'welterusten', 'wǎn’ān', '晚安', 'oyasumi', 'おやすみ'],
-    ['tschuess', 'Tschüss', 'au revoir', 'goodbye', 'arrivederci', 'adiós', 'tot ziens', 'zàijiàn', '再见', 'sayōnara', 'さようなら'],
-    ['bitte', 'Bitte', 's’il te plaît', 'please', 'per favore', 'por favor', 'alsjeblieft', 'qǐng', '请', 'onegai shimasu', 'おねがいします'],
-    ['danke', 'Danke', 'merci', 'thank you', 'grazie', 'gracias', 'dank je wel', 'xièxie', '谢谢', 'arigatō', 'ありがとう'],
-    ['ja', 'Ja', 'oui', 'yes', 'sì', 'sí', 'ja', 'shì', '是', 'hai', 'はい'],
-    ['nein', 'Nein', 'non', 'no', 'no', 'no', 'nee', 'bú shì', '不是', 'iie', 'いいえ'],
-    ['entschuldigung', 'Entschuldigung', 'pardon', 'sorry', 'scusa', 'perdón', 'sorry', 'duìbuqǐ', '对不起', 'gomen nasai', 'ごめんなさい'],
-    ['wie_gehts', 'Wie geht’s?', 'ça va ?', 'how are you?', 'come stai?', '¿cómo estás?', 'hoe gaat het?', 'nǐ hǎo ma?', '你好吗？', 'ogenki desu ka?', 'おげんきですか？'],
-    ['mama', 'Mama', 'maman', 'mum', 'mamma', 'mamá', 'mama', 'māma', '妈妈', 'mama', 'ママ'],
-    ['papa', 'Papa', 'papa', 'dad', 'papà', 'papá', 'papa', 'bàba', '爸爸', 'papa', 'パパ'],
-    ['freund', 'der Freund', 'l’ami', 'friend', 'l’amico', 'el amigo', 'de vriend', 'péngyou', '朋友', 'tomodachi', 'ともだち'],
-    ['hund', 'der Hund', 'le chien', 'dog', 'il cane', 'el perro', 'de hond', 'gǒu', '狗', 'inu', 'いぬ'],
-    ['katze', 'die Katze', 'le chat', 'cat', 'il gatto', 'el gato', 'de kat', 'māo', '猫', 'neko', 'ねこ'],
-    ['haus', 'das Haus', 'la maison', 'house', 'la casa', 'la casa', 'het huis', 'fángzi', '房子', 'uchi', 'うち'],
-    ['schule', 'die Schule', 'l’école', 'school', 'la scuola', 'la escuela', 'de school', 'xuéxiào', '学校', 'gakkō', 'がっこう'],
-    ['wasser', 'das Wasser', 'l’eau', 'water', 'l’acqua', 'el agua', 'het water', 'shuǐ', '水', 'mizu', 'みず'],
-    ['brot', 'das Brot', 'le pain', 'bread', 'il pane', 'el pan', 'het brood', 'miànbāo', '面包', 'pan', 'パン'],
-    ['apfel', 'der Apfel', 'la pomme', 'apple', 'la mela', 'la manzana', 'de appel', 'píngguǒ', '苹果', 'ringo', 'りんご'],
+    ['hallo', 'Hallo', 'salut', 'hello', 'ciao', 'hola', 'hallo', 'nǐ hǎo', '你好', 'konnichiwa', 'こんにちは', 'szia'],
+    ['guten_morgen', 'Guten Morgen', 'bonjour', 'good morning', 'buongiorno', 'buenos días', 'goedemorgen', 'zǎoshang hǎo', '早上好', 'ohayō', 'おはよう', 'jó reggelt'],
+    ['gute_nacht', 'Gute Nacht', 'bonne nuit', 'good night', 'buonanotte', 'buenas noches', 'welterusten', 'wǎn’ān', '晚安', 'oyasumi', 'おやすみ', 'jó éjszakát'],
+    ['tschuess', 'Tschüss', 'au revoir', 'goodbye', 'arrivederci', 'adiós', 'tot ziens', 'zàijiàn', '再见', 'sayōnara', 'さようなら', 'viszlát'],
+    ['bitte', 'Bitte', 's’il te plaît', 'please', 'per favore', 'por favor', 'alsjeblieft', 'qǐng', '请', 'onegai shimasu', 'おねがいします', 'kérlek'],
+    ['danke', 'Danke', 'merci', 'thank you', 'grazie', 'gracias', 'dank je wel', 'xièxie', '谢谢', 'arigatō', 'ありがとう', 'köszönöm'],
+    ['ja', 'Ja', 'oui', 'yes', 'sì', 'sí', 'ja', 'shì', '是', 'hai', 'はい', 'igen'],
+    ['nein', 'Nein', 'non', 'no', 'no', 'no', 'nee', 'bú shì', '不是', 'iie', 'いいえ', 'nem'],
+    ['entschuldigung', 'Entschuldigung', 'pardon', 'sorry', 'scusa', 'perdón', 'sorry', 'duìbuqǐ', '对不起', 'gomen nasai', 'ごめんなさい', 'bocsánat'],
+    ['wie_gehts', 'Wie geht’s?', 'ça va ?', 'how are you?', 'come stai?', '¿cómo estás?', 'hoe gaat het?', 'nǐ hǎo ma?', '你好吗？', 'ogenki desu ka?', 'おげんきですか？', 'hogy vagy?'],
+    ['mama', 'Mama', 'maman', 'mum', 'mamma', 'mamá', 'mama', 'māma', '妈妈', 'mama', 'ママ', 'anya'],
+    ['papa', 'Papa', 'papa', 'dad', 'papà', 'papá', 'papa', 'bàba', '爸爸', 'papa', 'パパ', 'apa'],
+    ['freund', 'der Freund', 'l’ami', 'friend', 'l’amico', 'el amigo', 'de vriend', 'péngyou', '朋友', 'tomodachi', 'ともだち', 'barát'],
+    ['hund', 'der Hund', 'le chien', 'dog', 'il cane', 'el perro', 'de hond', 'gǒu', '狗', 'inu', 'いぬ', 'kutya'],
+    ['katze', 'die Katze', 'le chat', 'cat', 'il gatto', 'el gato', 'de kat', 'māo', '猫', 'neko', 'ねこ', 'macska'],
+    ['haus', 'das Haus', 'la maison', 'house', 'la casa', 'la casa', 'het huis', 'fángzi', '房子', 'uchi', 'うち', 'ház'],
+    ['schule', 'die Schule', 'l’école', 'school', 'la scuola', 'la escuela', 'de school', 'xuéxiào', '学校', 'gakkō', 'がっこう', 'iskola'],
+    ['wasser', 'das Wasser', 'l’eau', 'water', 'l’acqua', 'el agua', 'het water', 'shuǐ', '水', 'mizu', 'みず', 'víz'],
+    ['brot', 'das Brot', 'le pain', 'bread', 'il pane', 'el pan', 'het brood', 'miànbāo', '面包', 'pan', 'パン', 'kenyér'],
+    ['apfel', 'der Apfel', 'la pomme', 'apple', 'la mela', 'la manzana', 'de appel', 'píngguǒ', '苹果', 'ringo', 'りんご', 'alma'],
   ];
   /* Bilder, die man leicht verwechselt, kommen nie zusammen in eine Auswahl */
   const VERWECHSEL = [['hallo', 'tschuess'], ['hallo', 'guten_morgen'], ['ja', 'danke'], ['mama', 'papa'], ['freund', 'wie_gehts']];
@@ -73,6 +74,12 @@
       hallo: 'こんにちは！ぼくはヒロ。にほんへようこそ！', lob: ['すごい！', 'よくできました！', 'やったね！'], ende: '。',
       mungg: 'Das ist Hiro aus Japan. Mit ihm lernst du Japanisch!',
       sticker: [['st_fuji', 'Am Berg Fuji'], ['st_sushi', 'Sushi'], ['st_shinkansen', 'Im Shinkansen'], ['st_origami', 'Origami']] },
+    // 2026-11-02 (Wunsch des Benutzers): Ungarisch mit dem Puli Bence
+    { id: 'hu', spalte: 11, name: 'Ungarisch', land: 'Ungarn', freund: 'bence', fname: 'Bence', farbe: '#5C8A1E', banner: 'banner_hu',
+      zahlen: ['egy', 'kettő', 'három', 'négy', 'öt', 'hat', 'hét', 'nyolc', 'kilenc', 'tíz'],
+      hallo: 'Szia! Bence vagyok. Üdv Magyarországon!', lob: ['Szuper!', 'Ügyes vagy!', 'Nagyon jó!'],
+      mungg: 'Das ist Bence, mein Freund aus Ungarn. Er ist ein Puli, ein ungarischer Hirtenhund. Mit ihm lernst du Ungarisch!',
+      sticker: [['st_parlament', 'Auf der Donau'], ['st_thermalbad', 'Im Thermalbad'], ['st_zauberwuerfel', 'Der Zauberwürfel'], ['st_gulasch', 'Gulasch kochen']] },
   ];
   const LAENGE = [8, 10, 12];
   const WAHL = [3, 4, 4];
@@ -145,9 +152,9 @@
     };
   }
 
-  const STIMME = { fr: 'leo', en: 'bao', it: 'gina', es: 'pepe', nl: 'daan', zh: 'long', ja: 'hiro' };
+  const STIMME = { fr: 'leo', en: 'bao', it: 'gina', es: 'pepe', nl: 'daan', zh: 'long', ja: 'hiro', hu: 'bence' };
   const toene = [
-    ['sp_intro', 'gian', '[excited] Steig ein in den Ballon! Wir besuchen meine Freunde in Frankreich, England, Italien, Spanien, Holland, China und Japan.'],
+    ['sp_intro', 'gian', '[excited] Steig ein in den Ballon! Wir besuchen meine Freunde in Frankreich, England, Italien, Spanien, Holland, China, Japan und Ungarn.'],
     ['sp_hoer_zahl', 'gian', 'Hör gut zu! Welche Zahl ist das?'],
     ['sp_hoer_bild', 'gian', 'Hör gut zu! Welches Bild passt?'],
     ['sp_was_heisst', 'gian', 'Was heißt das auf Deutsch?'],
@@ -170,7 +177,7 @@
   });
 
   K.modul({
-    id: 'sprachen', titel: 'Sprachen', untertitel: 'Sieben Sprachen von Französisch bis Japanisch', farbe: '#7A4FC4',
+    id: 'sprachen', titel: 'Sprachen', untertitel: 'Acht Sprachen von Französisch bis Ungarisch', farbe: '#7A4FC4',
     banner: 'banner_sprachen', figur: 'figur_koffer', intro: 'sp_intro',
     themen: SPRACHEN.map(thema),
     toene,

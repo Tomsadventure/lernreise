@@ -113,7 +113,9 @@ const FLAG = {
   es: ['0 0 30 20', '<rect width="30" height="20" fill="#AA151B"/><rect y="5" width="30" height="10" fill="#F1BF00"/>'],
   ch: ['0 0 32 32', '<rect width="32" height="32" fill="#D52B1E"/><path d="M13 6h6v7h7v6h-7v7h-6v-7H6v-6h7z" fill="#fff"/>'],
 };
-const flagHTML = id => (FLAG[id] ? `<svg class="flag" viewBox="${FLAG[id][0]}" aria-hidden="true">${FLAG[id][1]}</svg>` : '');
+const FLAGGE_VON = { nl: 'nl', zh: 'cn', ja: 'jp', hu: 'hu' };             // Sprache -> Flagge aus src/flaggen (Scripts/flaggen.mjs)
+const flagHTML = id => (FLAG[id] ? `<svg class="flag" viewBox="${FLAG[id][0]}" aria-hidden="true">${FLAG[id][1]}</svg>`
+  : FLAGGE_VON[id] ? `<img class="flag" src="flaggen/${FLAGGE_VON[id]}.svg" alt="">` : '');
 const sterneHTML = (n, cls = '') => `<span class="sterne ${cls}" aria-label="${n} von 3 Sternen">${[1, 2, 3].map(i => `<i class="${i <= n ? 'an' : ''}">${ICON.star}</i>`).join('')}</span>`;
 
 /* ============================================================== Ton */
@@ -346,12 +348,13 @@ function themaHTML() {
 }
 
 /* ================================================================ Inhalte zeichnen
-   Ein Inhalt (Frage, Antwort, Lernkarte, Memory-Karte) kann haben: text, bild, wappen, uhr {h, m}, digital, zahl, wort,
-   schild (Autokennzeichen), karte {zeige}, woche (Tag hervorheben). gross = für die Frage. */
+   Ein Inhalt (Frage, Antwort, Lernkarte, Memory-Karte) kann haben: text, bild, wappen, flagge, uhr {h, m}, digital, zahl, wort,
+   schild (Autokennzeichen), karte {zeige} (mit welt 'eu' die Europakarte), woche (Tag hervorheben). gross = für die Frage. */
 function inhaltHTML(x, gross = false) {
   let h = '';
-  if (x.karte) h += karteSVG({ zeige: x.karte.zeige, see: x.karte.see, fluss: x.karte.fluss, klein: !gross });
+  if (x.karte) h += karteSVG({ zeige: x.karte.zeige, see: x.karte.see, fluss: x.karte.fluss, welt: x.karte.welt, klein: !gross });
   if (x.wappen) h += `<img class="wappen" src="wappen/${x.wappen}.svg" alt="">`;
+  if (x.flagge) h += `<img class="wappen flagge" src="flaggen/${x.flagge}.svg" alt="">`;
   if (x.bild) h += `<img class="bild" src="${img(x.bild)}" alt="">`;
   if (x.uhr) h += uhrSVG(x.uhr.h, x.uhr.m);
   if (x.zahl != null) h += zahlHTML(x.zahl, gross);
@@ -394,7 +397,8 @@ function uhrSetzen(svg, h, m) {
 /* Schweizer Karte (module/schweiz/karte.js): zeige = leuchtender Kanton; see / fluss = leuchtender See bzw. Fluss (Modul «Seen und
    Flüsse»: dann mit allen Seen einzeln und allen Flüssen, abgeschnitten an der Landesgrenze); ebene 'see' = man tippt auf Seen */
 let karteNr = 0;
-function karteSVG({ zeige, see, fluss, klein = false, tippen = false, ebene } = {}) {
+function karteSVG({ zeige, see, fluss, klein = false, tippen = false, ebene, welt } = {}) {
+  if (welt === 'eu') return europaSVG({ zeige, klein, tippen });
   const KC = window.KARTE_CH;
   if (!KC) return '';
   const wasser = see || fluss || ebene === 'see', clip = `land-${++karteNr}`;
@@ -406,6 +410,17 @@ function karteSVG({ zeige, see, fluss, klein = false, tippen = false, ebene } = 
       ${Object.entries(KC.seenEinzeln).map(([k, d]) => `<path data-see="${k}" class="see${k === see ? ' leuchtet' : ''}" d="${d}"/>`).join('')}`
     : `<path class="seen" d="${KC.seen}"/>`}
     ${zeige ? ring(KC.punkte[zeige], 22) : see ? ring(KC.seenPunkte[see], 26) : ''}
+  </svg>`;
+}
+/* Europakarte (module/europa/karte.js): Meer, übriges Land grau, die Länder des Moduls; um kleine Länder ein Ring */
+function europaSVG({ zeige, klein, tippen }) {
+  const KE = window.KARTE_EU;
+  if (!KE) return '';
+  const p = zeige && KE.punkte[zeige];
+  return `<svg class="karte europa${klein ? ' klein' : ''}${tippen ? ' tippen' : ''}" viewBox="0 0 ${KE.breite} ${KE.hoehe}" role="img" aria-label="Karte von Europa">
+    <rect class="meer" width="${KE.breite}" height="${KE.hoehe}"/><path class="rest" d="${KE.rest}"/>
+    ${Object.entries(KE.laender).map(([k, d]) => `<path data-k="${k}" class="kt${k === zeige ? ' leuchtet' : ''}" d="${d}"/>`).join('')}
+    ${p && p[2] < 14 ? `<circle class="ring" cx="${p[0]}" cy="${p[1]}" r="${Math.max(14, p[2] * 2)}"/>` : ''}
   </svg>`;
 }
 /* Wie heisst, was man auf der Karte angetippt hat? (Kanton aus dem Modul Schweiz, sonst aus der Aufgabe) */
@@ -482,12 +497,12 @@ function vorlesen(auto) {
 }
 function antwortHTML(a) {
   if (a.art === 'wahl') {
-    const bilder = a.optionen.some(o => o.bild || (o.wappen && !o.klein) || o.uhr || o.zahl != null || o.schild || o.digital);
+    const bilder = a.optionen.some(o => o.bild || ((o.wappen || o.flagge) && !o.klein) || o.uhr || o.zahl != null || o.schild || o.digital);
     const sp = a.spalten || (bilder ? (a.optionen.length === 3 ? 3 : 2) : 1);
     return `<div class="optionen sp-${sp} n-${a.optionen.length}${bilder ? ' mit-inhalt' : ''}">${a.optionen.map(o => `<button class="opt${o.klein ? ' klein' : ''}" data-act="wahl" data-id="${esc(o.id)}">
       ${inhaltHTML(o)}${o.text ? `<span class="opt-text${o.fremd ? ' fremd' : ''}">${esc(o.text)}${schriftHTML(o)}</span>` : ''}</button>`).join('')}</div>`;
   }
-  if (a.art === 'karte') return `<div class="karte-box">${karteSVG({ tippen: true, ebene: a.karte && a.karte.ebene })}<span class="karte-name" id="karte-name"></span></div>`;
+  if (a.art === 'karte') return `<div class="karte-box">${karteSVG({ tippen: true, ebene: a.karte && a.karte.ebene, welt: a.karte && a.karte.welt })}<span class="karte-name" id="karte-name"></span></div>`;
   if (a.art === 'reihe') {
     return `<div class="reihe-plaetze" id="plaetze">${a.reihenfolge.map((_, i) => `<span class="platz" data-i="${i}">${i + 1}</span>`).join('')}</div>
       <div class="reihe-teile" id="teile">${a.teile.map(x => `<button class="teil${x.fremd ? ' fremd' : ''}" data-act="teil" data-id="${esc(x.id)}">${esc(x.text)}${schriftHTML(x)}</button>`).join('')}</div>`;
@@ -585,7 +600,7 @@ function waehle(id, btn) {
 function karteTipp(e) {
   const a = aktuell(), svg = e.target.closest('svg.karte');
   if (!svg || Q.gesperrt) return;
-  const KC = window.KARTE_CH, ctm = svg.getScreenCTM(), see = a.karte && a.karte.ebene === 'see', attr = see ? 'see' : 'k';
+  const KC = svg.classList.contains('europa') ? window.KARTE_EU : window.KARTE_CH, ctm = svg.getScreenCTM(), see = a.karte && a.karte.ebene === 'see', attr = see ? 'see' : 'k';
   const punkte = see ? KC.seenPunkte : KC.punkte;
   let k = (e.target.closest(`[data-${attr}]`) || { dataset: {} }).dataset[attr] || '';
   if (see && k && !a.karte.namen[k]) k = '';                        // kleine Seen, die nicht dran sind, zählen nicht
@@ -876,8 +891,8 @@ function entdeckenHTML() {
 function entdeckenZeigen() {
   const k = E.karten[E.i], box = document.getElementById('lernkarte');
   if (!box) return;
-  const bild = k.wappen || k.bild || k.zahl != null || k.karte;
-  box.innerHTML = `<div class="lk-bild${k.karte && k.wappen ? ' doppelt' : ''}">${bild ? inhaltHTML(Object.assign({}, k, { karte: k.karte, zahl: k.zahl }), true) : ''}
+  const bild = k.wappen || k.flagge || k.bild || k.zahl != null || k.karte;
+  box.innerHTML = `<div class="lk-bild${k.karte && (k.wappen || k.flagge) ? ' doppelt' : ''}">${bild ? inhaltHTML(Object.assign({}, k, { karte: k.karte, zahl: k.zahl }), true) : ''}
       ${k.liste ? `<ol class="lk-liste">${k.liste.map(x => `<li>${esc(x)}</li>`).join('')}</ol>` : ''}</div>
     <div class="lk-text">
       <h2 class="${k.fremd ? 'fremd' : ''}"><span>${esc(k.titel)}${schriftHTML(k)}</span><button class="snd" data-act="karte-ton" aria-label="Anhören">${ICON.speaker}</button></h2>
@@ -1434,7 +1449,7 @@ function settingsHTML() {
         : 'Die Lernreise läuft auch ohne Internet, sobald sie einmal geladen ist. Im Browser-Menü kann man sie als App installieren.'}</p>
     </section>
     <p class="version">Lernreise · Stand ${esc(window.BUILD || 'dev')} · Bilder: OpenAI · Stimmen: ElevenLabs · Wappen: Wikimedia Commons (gemeinfrei) ·
-      Karte: BFS/swisstopo (swiss-maps), Flüsse © OpenStreetMap-Mitwirkende · Schriften: Nunito, Andika (SIL OFL)</p>
+      Karte: BFS/swisstopo (swiss-maps), Flüsse © OpenStreetMap-Mitwirkende · Europakarte: Natural Earth · Flaggen: Flagpedia (gemeinfrei) · Schriften: Nunito, Andika (SIL OFL)</p>
   </div>`;
 }
 const confirmHTML = (title, text, yes, act) => `<div class="sheet-head"><h2>${title}</h2></div><div class="sheet-body"><p class="confirm-text">${text}</p>

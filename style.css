@@ -353,6 +353,26 @@ body[data-view="runde"] .screen.runde { display: flex; flex-direction: column; m
 .karte .see.richtig { fill: var(--gruen); animation: none; }
 .karte .see.falsch { fill: var(--beere); }
 .karte .see.loesung { fill: var(--gruen); animation: leuchten 1.4s ease-in-out infinite; }
+/* Europakarte (Modul Europa): Meer, übriges Land grau, feinere Grenzen (viele kleine Länder) */
+.karte.europa { border-radius: 14px; }
+.karte.europa .meer { fill: #BCDDF1; }
+.karte.europa .rest { fill: #DAD6CE; stroke: #fff; stroke-width: .6; pointer-events: none; }
+/* Pastellfarben wie auf einer Schulkarte, damit Nachbarländer sich abheben (die Reihenfolge ist alphabetisch, nicht eingefärbt) */
+.karte.europa .kt { fill: #F7E6A8; stroke: #fff; stroke-width: .8; }
+.karte.europa .kt:nth-child(5n) { fill: #CFE6BE; }
+.karte.europa .kt:nth-child(5n+1) { fill: #F5CFC4; }
+.karte.europa .kt:nth-child(5n+2) { fill: #DDD4EF; }
+.karte.europa .kt:nth-child(5n+3) { fill: #F8D7AE; }
+.karte.europa.tippen .kt:hover { fill: var(--f-mitte); }
+.karte.europa .kt.leuchtet { fill: var(--f); }
+.karte.europa .kt.richtig, .karte.europa .kt.loesung { fill: var(--gruen); }
+.karte.europa .kt.falsch { fill: var(--beere); }
+.karte.europa .ring { stroke-width: 3; }
+.karte.europa.klein .ring { stroke-width: 4.5; }
+/* Flaggen: Grösse wie die Wappen, aber im eigenen Seitenverhältnis; ein feiner Rand, damit weisse Flächen sichtbar bleiben */
+img.wappen.flagge { max-width: 100%; object-fit: contain; filter: drop-shadow(0 0 .7px rgba(0, 0, 0, .6)) drop-shadow(0 3px 5px rgba(0, 0, 0, .16)); }
+.opt.klein img.wappen.flagge { height: 34px; }
+.lk-bild.doppelt img.wappen.flagge { height: min(15vh, 110px); }
 /* Chinesisch, Japanisch: Schriftzeichen klein unter der Lautschrift */
 .schrift { display: block; margin-top: 2px; font-size: .62em; font-weight: 700; color: var(--ink-soft); letter-spacing: .04em;
   font-family: system-ui, 'PingFang SC', 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Microsoft YaHei', 'Yu Gothic', 'Noto Sans CJK SC', sans-serif; }
