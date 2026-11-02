@@ -1,9 +1,14 @@
 /* Lernreise – warmer Bilderbuch-Look: Cremeweiss wie Papier, Munggs Braun und sein rotes Halstuch als Grundfarben.
    Jedes Modul und Thema färbt seine Seiten selbst (--f, --f-hell, --f-mitte, --f-tief, gesetzt in app.js).
-   Schrift: Nunito für alles (SIL OFL). Das Sammelbuch am Ende ist aus Wörtli-Frosch übernommen. */
+   Schrift: Nunito für alles, Andika für Pinyin (beide SIL OFL). Das Sammelbuch am Ende ist aus Wörtli-Frosch übernommen. */
 @font-face { font-family: 'Nunito'; src: url('fonts/Nunito-Regular.woff2') format('woff2'); font-weight: 400; font-display: swap; }
 @font-face { font-family: 'Nunito'; src: url('fonts/Nunito-Bold.woff2') format('woff2'); font-weight: 700; font-display: swap; }
 @font-face { font-family: 'Nunito'; src: url('fonts/Nunito-ExtraBold.woff2') format('woff2'); font-weight: 800; font-display: swap; }
+/* Pinyin (Chinesisch): Nunito hat kein ǐ ǒ ǖ ǘ ǚ ǜ (und Grossbuchstaben dazu). Ganze chinesische Wörter stehen deshalb in Andika (SIL OFL,
+   fonts/OFL-Andika.txt); in anderem Text springt Andika nur für diese Buchstaben ein (unicode-range). */
+@font-face { font-family: 'Andika'; src: url('fonts/Andika-Bold.woff2') format('woff2'); font-weight: 700 800; font-display: swap; }
+@font-face { font-family: 'Nunito'; src: url('fonts/Andika-Bold.woff2') format('woff2'); font-weight: 400 800; font-display: swap;
+  unicode-range: U+01CF-01D3, U+01D5-01DC; }
 
 :root {
   color-scheme: light;
@@ -53,6 +58,7 @@ img { display: block; max-width: 100%; }
 .ic { width: 24px; height: 24px; flex: none; }
 b { font-weight: 800; }
 .fremd { font-weight: 800; letter-spacing: .01em; }
+[data-sprache="zh"] .fremd { font-family: 'Andika', 'Nunito', sans-serif; font-weight: 700; letter-spacing: .02em; }
 .flag { width: 1.25em; height: auto; border-radius: 3px; box-shadow: 0 0 0 1px rgba(0, 0, 0, .12); flex: none; }
 
 .screen { max-width: 1040px; margin: 0 auto; padding: max(12px, env(safe-area-inset-top)) var(--gut) max(28px, env(safe-area-inset-bottom)); }
@@ -334,6 +340,24 @@ body[data-view="runde"] .screen.runde { display: flex; flex-direction: column; m
 .karte .kt.richtig { fill: var(--gruen); animation: none; }
 .karte .kt.loesung { fill: var(--gruen); animation: leuchten 1.4s ease-in-out infinite; }
 .karte .kt.falsch { fill: var(--beere); }
+/* Seen und Flüsse (2026-11-02): alle Seen einzeln, Flüsse als Linien; was gefragt ist, leuchtet orange */
+.karte.wasser .kt { fill: #F4EBD8; }
+.karte .see { fill: #8FC6EC; stroke: #6FAFD9; stroke-width: .8; }
+.karte .fluss { fill: none; stroke: #5AA9E6; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; pointer-events: none; }
+.karte .see.leuchtet { fill: #F06A1A; stroke: #fff; stroke-width: 1.5; animation: leuchten 1.4s ease-in-out infinite; }
+.karte .fluss.leuchtet { stroke: #F06A1A; stroke-width: 7; animation: leuchten 1.4s ease-in-out infinite; }
+.karte.klein .fluss { stroke-width: 4; }
+.karte.klein .fluss.leuchtet { stroke-width: 12; }
+.karte.tippen .see { cursor: pointer; }
+.karte.tippen .see:hover { fill: #5AA9E6; }
+.karte .see.richtig { fill: var(--gruen); animation: none; }
+.karte .see.falsch { fill: var(--beere); }
+.karte .see.loesung { fill: var(--gruen); animation: leuchten 1.4s ease-in-out infinite; }
+/* Chinesisch, Japanisch: Schriftzeichen klein unter der Lautschrift */
+.schrift { display: block; margin-top: 2px; font-size: .62em; font-weight: 700; color: var(--ink-soft); letter-spacing: .04em;
+  font-family: system-ui, 'PingFang SC', 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Microsoft YaHei', 'Yu Gothic', 'Noto Sans CJK SC', sans-serif; }
+.schrift:lang(ja) { font-family: system-ui, 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', 'Noto Sans CJK JP', sans-serif; }
+.lk-text h2 .schrift { font-size: .5em; }
 .karte-box { position: relative; padding: 8px; border-radius: var(--r-lg); background: #fff; box-shadow: var(--lift-sm); }
 .karte-box .karte { width: 100%; height: auto; max-height: calc(100vh - 420px); max-height: calc(100dvh - 420px); min-height: 200px; }
 .art-karte .frage-inhalt.klein .wappen { height: 64px; }

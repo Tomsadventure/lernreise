@@ -89,7 +89,7 @@
     ['Der Film beginnt um {a} und dauert {d}. Wann ist er fertig?'],
     ['Das Fussballtraining beginnt um {a} und dauert {d}. Wann ist es fertig?'],
     ['Der Zug fährt um {a} ab. Die Fahrt dauert {d}. Wann kommt er an?'],
-    ['Mungg geht um {a} los und wandert {d}. Wann ist er auf dem Gipfel?'],
+    ['Gian geht um {a} los und wandert {d}. Wann ist er auf dem Gipfel?'],
   ];
   const plus = (h, m, d) => { const t = (h * 60 + m + d) % 1440; return { h: Math.floor(t / 60), m: t % 60 }; };
   const zeitspannen = (s, R) => Array.from({ length: 10 }, (_, i) => {
@@ -218,43 +218,43 @@
   /* ------------------------------------------------------------ Töne */
   const ORDINAL = ['erste', 'zweite', 'dritte', 'vierte', 'fünfte', 'sechste', 'siebte', 'achte', 'neunte', 'zehnte', 'elfte', 'zwölfte'];
   const toene = [
-    ['zeit_intro', 'mungg', '[excited] Tick, tack! Hier lernst du die Uhr, die Wochentage und die Monate.'],
-    ['zeit_uhr_intro', 'mungg', 'Kannst du die Uhr lesen? Der kurze Zeiger zeigt die Stunde, der lange Zeiger die Minuten.'],
-    ['zeit_kal_intro', 'mungg', 'Ein Jahr hat zwölf Monate und vier Jahreszeiten. Und eine Woche hat sieben Tage.'],
-    ['zeit_spieluhr', 'mungg', 'Das ist meine Spiel-Uhr. Dreh die Zeiger, dann sage ich dir, wie spät es ist.'],
-    ['zeit_wie_spaet', 'mungg', 'Wie spät ist es?'],
-    ['zeit_es_ist', 'mungg', 'Es ist …'],
-    ['zeit_stell', 'mungg', 'Stell die Uhr auf …'],
-    ['zeit_digital', 'mungg', 'Welche Digitaluhr zeigt die gleiche Zeit?'],
-    ['zeit_digital24', 'mungg', 'Wie zeigt die Digitaluhr diese Zeit?'],
-    ['kal_nach_tag', 'mungg', 'Welcher Tag kommt nach …'],
-    ['kal_vor_tag', 'mungg', 'Welcher Tag kommt vor …'],
-    ['kal_heute_ist', 'mungg', 'Heute ist …'],
-    ['kal_morgen', 'mungg', 'Welcher Tag ist morgen?'],
-    ['kal_uebermorgen', 'mungg', 'Welcher Tag ist übermorgen?'],
-    ['kal_gestern', 'mungg', 'Welcher Tag war gestern?'],
-    ['kal_nach_monat', 'mungg', 'Welcher Monat kommt nach …'],
-    ['kal_vor_monat', 'mungg', 'Welcher Monat kommt vor …'],
-    ['kal_wievielte', 'mungg', 'Der wievielte Monat im Jahr ist der …'],
-    ['kal_jahreszeit', 'mungg', 'Zu welcher Jahreszeit gehört der …'],
-    ['kal_tage', 'mungg', 'Wie viele Tage hat der …'],
-    ['kal_reihe_tage', 'mungg', 'Bring die Wochentage in die richtige Reihenfolge!'],
-    ['kal_reihe_monate', 'mungg', 'Bring die Monate in die richtige Reihenfolge!'],
-    ['kal_info_woche', 'mungg', 'Eine Woche hat sieben Tage. Am Samstag und Sonntag ist Wochenende.'],
-    ...JZ.map(([id, text, mo]) => [`kal_info_${id}`, 'mungg', `Zum ${text} gehören ${mo.map(x => MONATE[x - 1]).join(', ').replace(/, ([^,]*)$/, ' und $1')}.`]),
-    ...TAGE.map((t, i) => [`tag_${i}`, 'mungg', `${t}.`]),
-    ...MONATE.map((t, i) => [`monat_${i}`, 'mungg', `${t}.`]),
-    ...JZ.map(([id, text]) => [`jz_${id}`, 'mungg', `${text}.`]),
-    ...MONATE.map((t, i) => [`mi_${i}`, 'mungg', `Der ${t} ist der ${ORDINAL[i]} Monat. Er hat ${i === 1 ? 'achtundzwanzig Tage, im Schaltjahr neunundzwanzig' : TAGE_IM_MONAT[i] === 31 ? 'einunddreißig Tage' : 'dreißig Tage'} und gehört zum ${jzVon(i + 1)[1]}.`]),
+    ['zeit_intro', 'gian', '[excited] Tick, tack! Hier lernst du die Uhr, die Wochentage und die Monate.'],
+    ['zeit_uhr_intro', 'gian', 'Kannst du die Uhr lesen? Der kurze Zeiger zeigt die Stunde, der lange Zeiger die Minuten.'],
+    ['zeit_kal_intro', 'gian', 'Ein Jahr hat zwölf Monate und vier Jahreszeiten. Und eine Woche hat sieben Tage.'],
+    ['zeit_spieluhr', 'gian', 'Das ist meine Spiel-Uhr. Dreh die Zeiger, dann sage ich dir, wie spät es ist.'],
+    ['zeit_wie_spaet', 'gian', 'Wie spät ist es?'],
+    ['zeit_es_ist', 'gian', 'Es ist …'],
+    ['zeit_stell', 'gian', 'Stell die Uhr auf …'],
+    ['zeit_digital', 'gian', 'Welche Digitaluhr zeigt die gleiche Zeit?'],
+    ['zeit_digital24', 'gian', 'Wie zeigt die Digitaluhr diese Zeit?'],
+    ['kal_nach_tag', 'gian', 'Welcher Tag kommt nach …'],
+    ['kal_vor_tag', 'gian', 'Welcher Tag kommt vor …'],
+    ['kal_heute_ist', 'gian', 'Heute ist …'],
+    ['kal_morgen', 'gian', 'Welcher Tag ist morgen?'],
+    ['kal_uebermorgen', 'gian', 'Welcher Tag ist übermorgen?'],
+    ['kal_gestern', 'gian', 'Welcher Tag war gestern?'],
+    ['kal_nach_monat', 'gian', 'Welcher Monat kommt nach …'],
+    ['kal_vor_monat', 'gian', 'Welcher Monat kommt vor …'],
+    ['kal_wievielte', 'gian', 'Der wievielte Monat im Jahr ist der …'],
+    ['kal_jahreszeit', 'gian', 'Zu welcher Jahreszeit gehört der …'],
+    ['kal_tage', 'gian', 'Wie viele Tage hat der …'],
+    ['kal_reihe_tage', 'gian', 'Bring die Wochentage in die richtige Reihenfolge!'],
+    ['kal_reihe_monate', 'gian', 'Bring die Monate in die richtige Reihenfolge!'],
+    ['kal_info_woche', 'gian', 'Eine Woche hat sieben Tage. Am Samstag und Sonntag ist Wochenende.'],
+    ...JZ.map(([id, text, mo]) => [`kal_info_${id}`, 'gian', `Zum ${text} gehören ${mo.map(x => MONATE[x - 1]).join(', ').replace(/, ([^,]*)$/, ' und $1')}.`]),
+    ...TAGE.map((t, i) => [`tag_${i}`, 'gian', `${t}.`]),
+    ...MONATE.map((t, i) => [`monat_${i}`, 'gian', `${t}.`]),
+    ...JZ.map(([id, text]) => [`jz_${id}`, 'gian', `${text}.`]),
+    ...MONATE.map((t, i) => [`mi_${i}`, 'gian', `Der ${t} ist der ${ORDINAL[i]} Monat. Er hat ${i === 1 ? 'achtundzwanzig Tage, im Schaltjahr neunundzwanzig' : TAGE_IM_MONAT[i] === 31 ? 'einunddreißig Tage' : 'dreißig Tage'} und gehört zum ${jzVon(i + 1)[1]}.`]),
   ];
-  for (let h = 1; h <= 12; h++) for (let m = 0; m < 60; m += 5) toene.push([zeitTon(h, m), 'mungg', `${gross(zeitText(h, m))}.`]);
+  for (let h = 1; h <= 12; h++) for (let m = 0; m < 60; m += 5) toene.push([zeitTon(h, m), 'gian', `${gross(zeitText(h, m))}.`]);
 
   K.modul({
     id: 'zeit', titel: 'Uhr und Kalender', untertitel: 'Uhrzeit, Wochentage und Monate', farbe: '#2F7FC1',
-    banner: 'banner_uhr', figur: 'mungg_uhr', intro: 'zeit_intro',
+    banner: 'banner_uhr', figur: 'figur_uhr', intro: 'zeit_intro',
     themen: [
       {
-        id: 'uhr', titel: 'Die Uhr', untertitel: 'Uhr lesen und stellen', farbe: '#2F7FC1', banner: 'banner_uhr', figur: 'mungg_uhr',
+        id: 'uhr', titel: 'Die Uhr', untertitel: 'Uhr lesen und stellen', farbe: '#2F7FC1', banner: 'banner_uhr', figur: 'figur_uhr',
         intro: 'zeit_uhr_intro', entdecken: 'uhr',
         uebungen: [
           { id: 'lesen', titel: 'Uhr lesen', text: 'Wie spät ist es?', ab: 1, icon: 'uhr', runde: uhrLesen },
@@ -266,7 +266,7 @@
         sticker: [['st_wecker', 'Der Wecker'], ['st_uhrmacher', 'Der Uhrmacher'], ['st_turmuhr', 'Die Turmuhr'], ['st_sanduhr', 'Die Sanduhr']],
       },
       {
-        id: 'kalender', titel: 'Tage und Monate', untertitel: 'Woche, Monate und Jahreszeiten', farbe: '#E08A1E', banner: 'banner_kalender', figur: 'mungg_buch',
+        id: 'kalender', titel: 'Tage und Monate', untertitel: 'Woche, Monate und Jahreszeiten', farbe: '#E08A1E', banner: 'banner_kalender', figur: 'figur_buch',
         intro: 'zeit_kal_intro', karten: kalenderKarten,
         uebungen: [
           { id: 'tage', titel: 'Wochentage', text: 'Welcher Tag kommt danach?', ab: 1, icon: 'kalender', runde: wochentage },

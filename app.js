@@ -1,4 +1,4 @@
-/* Lernreise – Lern-App für Kinder von 7 bis 11 mit Mungg, dem Murmeltier.
+/* Lernreise – Lern-App für Kinder von 7 bis 11 mit Gian, dem Steinbock (bis 2026-11-01: Mungg, das Murmeltier).
    Eine Seite, kein Framework. Der Kern (kern/lernen.js) kennt die Module; jedes Modul (module/<name>/) bringt seine Daten und
    Aufgaben mit. Hier stehen nur die Bildschirme: Kinder (Profile), Reisekarte, Modul, Thema, Runde, Ergebnis, Entdecken,
    Spiel-Uhr, Memory, Album und Sammelbuch. Der Fortschritt gehört jedem Kind und bleibt auf dem Gerät (localStorage). */
@@ -15,6 +15,8 @@ const mix = (hex, to, t) => '#' + [1, 3, 5].map(i => {
   return Math.round(a + (b - a) * t).toString(16).padStart(2, '0');
 }).join('');
 const farben = f => `--f:${f};--f-hell:${mix(f, '#ffffff', 0.86)};--f-mitte:${mix(f, '#ffffff', 0.6)};--f-tief:${mix(f, '#000000', 0.28)}`;
+// Themenseiten: Farben und bei Sprachen die Sprache (für die Schrift, z. B. Pinyin in Andika – style.css)
+const themaStil = t => `style="${farben(t.farbe)}"${t.sprache ? ` data-sprache="${t.sprache}"` : ''}`;
 const AVATARE = [['fuchs', 'Fuchs'], ['igel', 'Igel'], ['eule', 'Eule'], ['hase', 'Hase'], ['eichhoernchen', 'Eichhörnchen'],
   ['steinbock', 'Steinbock'], ['baer', 'Bär'], ['pinguin', 'Pinguin'], ['frosch', 'Frosch'], ['tiger', 'Tiger'], ['panda', 'Panda']];
 const ALTER = [6, 7, 8, 9, 10, 11, 12];
@@ -118,7 +120,7 @@ const sterneHTML = (n, cls = '') => `<span class="sterne ${cls}" aria-label="${n
 Ton.klaenge = () => S.settings.sounds;
 const sfx = Ton.sfx;
 const stimmeAn = () => S.settings.voice;
-/* Mungg (oder der Freund) spricht nur, wenn eingeschaltet. Inhalte zum Hören (Fremdwörter) spielen immer. */
+/* Gian (oder der Freund) spricht nur, wenn eingeschaltet. Inhalte zum Hören (Fremdwörter) spielen immer. */
 function sprich(names, append, danach) { if (stimmeAn()) Ton.say(names, append, danach); else if (danach) danach(); }
 const rnd = n => 1 + Math.floor(Math.random() * n);
 const pad2 = n => String(n).padStart(2, '0');
@@ -180,8 +182,8 @@ function werHTML() {
   const ps = S.profile;
   return `<div class="screen wer">
     <div class="wer-kopf">
-      <button class="wer-mungg" data-act="mungg" aria-label="Mungg"><img src="${img('mungg_hallo')}" alt=""></button>
-      <div class="bubble"><b>${ps.length ? 'Wer reist heute mit?' : 'Hallo! Ich bin Mungg.'}</b>
+      <button class="wer-mungg" data-act="gian" aria-label="Gian"><img src="${img('figur_hallo')}" alt=""></button>
+      <div class="bubble"><b>${ps.length ? 'Wer reist heute mit?' : 'Hoi! Ich bin Gian.'}</b>
         <span>${ps.length ? 'Tipp auf dein Bild.' : 'Ich nehme dich mit auf eine Lernreise durch die Schweiz, die Zeit und viele Sprachen. Wie heisst du?'}</span></div>
     </div>
     <div class="profil-grid">
@@ -254,7 +256,7 @@ function startHTML() {
   return `<div class="screen start">
     ${kopfHTML('', null)}
     <section class="hero" style="background-image:url(${img('banner_reise')})">
-      <button class="hero-mungg" data-act="mungg" aria-label="Mungg"><img src="${img('mungg_karte')}" alt=""></button>
+      <button class="hero-mungg" data-act="gian" aria-label="Gian"><img src="${img('figur_karte')}" alt=""></button>
       <div class="bubble"><b>Hallo ${esc(p.name)}!</b><span>Wohin reisen wir heute?</span></div>
     </section>
     <h2 class="abschnitt">Reiseziele</h2>
@@ -315,7 +317,7 @@ function themaHTML() {
   const s = P().stufe, emp = empfohlen(m, t), zurueck = m.themen.length > 1 ? 'zum-modul' : 'start';
   const st = t.sticker || [];
   const figur = t.freund ? t.freund.hallo : t.figur;
-  return `<div class="screen thema" style="${farben(t.farbe)}">
+  return `<div class="screen thema" ${themaStil(t)}>
     ${kopfHTML(`${t.sprache ? flagHTML(t.sprache) : ''}${esc(t.titel)}`, zurueck)}
     <section class="kopf" style="background-image:url(${img(t.banner)})">
       <button class="kopf-figur" data-act="intro" aria-label="Noch einmal hören"><img src="${img(figur)}" alt=""></button>
@@ -348,16 +350,18 @@ function themaHTML() {
    schild (Autokennzeichen), karte {zeige}, woche (Tag hervorheben). gross = für die Frage. */
 function inhaltHTML(x, gross = false) {
   let h = '';
-  if (x.karte) h += karteSVG({ zeige: x.karte.zeige, klein: !gross });
+  if (x.karte) h += karteSVG({ zeige: x.karte.zeige, see: x.karte.see, fluss: x.karte.fluss, klein: !gross });
   if (x.wappen) h += `<img class="wappen" src="wappen/${x.wappen}.svg" alt="">`;
   if (x.bild) h += `<img class="bild" src="${img(x.bild)}" alt="">`;
   if (x.uhr) h += uhrSVG(x.uhr.h, x.uhr.m);
   if (x.zahl != null) h += zahlHTML(x.zahl, gross);
   if (x.schild) h += schildHTML(x.schild, x.nummer);
   if (x.digital) h += `<span class="digital">${esc(x.digital)}</span>`;
-  if (x.wort) h += `<span class="wort fremd">${esc(x.wort)}</span>`;
+  if (x.wort) h += `<span class="wort fremd">${esc(x.wort)}${schriftHTML(x)}</span>`;
   return h;
 }
+/* Chinesisch und Japanisch: gross die Lautschrift (Pinyin, Romaji), klein darunter die Schriftzeichen */
+const schriftHTML = x => (x.schrift ? `<small class="schrift" lang="${x.lang || ''}">${esc(x.schrift)}</small>` : '');
 const zahlHTML = (n, gross) => `<span class="zahl${gross ? ' mit-punkten' : ''}"><b>${n}</b>${gross ? `<span class="punkte" aria-hidden="true">${Array.from({ length: 10 }, (_, i) => `<i class="${i < n ? 'an' : ''}"></i>`).join('')}</span>` : ''}</span>`;
 const schildHTML = (k, nr) => `<span class="schild"><span class="schild-ch">${flagHTML('ch')}</span><b>${esc(k)}</b><span>${nr ? `${String(nr).slice(0, 2)} ${String(nr).slice(2)}` : '·'}</span></span>`;
 
@@ -387,15 +391,28 @@ function uhrSetzen(svg, h, m) {
   svg.querySelector('.zeiger-h').style.transform = `rotate(${((h % 12) + m / 60) * 30}deg)`;
   svg.querySelector('.zeiger-m').style.transform = `rotate(${m * 6}deg)`;
 }
-/* Schweizer Karte (module/schweiz/karte.js): zeige = leuchtender Kanton */
-function karteSVG({ zeige, klein = false, tippen = false } = {}) {
+/* Schweizer Karte (module/schweiz/karte.js): zeige = leuchtender Kanton; see / fluss = leuchtender See bzw. Fluss (Modul «Seen und
+   Flüsse»: dann mit allen Seen einzeln und allen Flüssen, abgeschnitten an der Landesgrenze); ebene 'see' = man tippt auf Seen */
+let karteNr = 0;
+function karteSVG({ zeige, see, fluss, klein = false, tippen = false, ebene } = {}) {
   const KC = window.KARTE_CH;
   if (!KC) return '';
-  return `<svg class="karte${klein ? ' klein' : ''}${tippen ? ' tippen' : ''}" viewBox="0 0 ${KC.breite} ${KC.hoehe}" role="img" aria-label="Karte der Schweiz">
-    ${Object.entries(KC.kantone).map(([k, d]) => `<path data-k="${k}" class="kt${k === zeige ? ' leuchtet' : ''}" d="${d}"/>`).join('')}
-    <path class="seen" d="${KC.seen}"/>
-    ${zeige ? `<circle class="ring" cx="${KC.punkte[zeige][0]}" cy="${KC.punkte[zeige][1]}" r="${Math.max(22, KC.punkte[zeige][2] * 1.6)}"/>` : ''}
+  const wasser = see || fluss || ebene === 'see', clip = `land-${++karteNr}`;
+  const ring = (p, r) => `<circle class="ring" cx="${p[0]}" cy="${p[1]}" r="${Math.max(r, p[2] * 1.6)}"/>`;
+  return `<svg class="karte${klein ? ' klein' : ''}${tippen ? ' tippen' : ''}${wasser ? ' wasser' : ''}" viewBox="0 0 ${KC.breite} ${KC.hoehe}" role="img" aria-label="Karte der Schweiz">
+    ${Object.entries(KC.kantone).map(([k, d]) => `<path data-k="${wasser ? '' : k}" class="kt${k === zeige ? ' leuchtet' : ''}" d="${d}"/>`).join('')}
+    ${wasser ? `<defs><clipPath id="${clip}"><path d="${KC.land}"/></clipPath></defs>
+      <g class="fluesse" clip-path="url(#${clip})">${Object.entries(KC.fluesse).map(([k, d]) => `<path data-fluss="${k}" class="fluss${k === fluss ? ' leuchtet' : ''}" d="${d}"/>`).join('')}</g>
+      ${Object.entries(KC.seenEinzeln).map(([k, d]) => `<path data-see="${k}" class="see${k === see ? ' leuchtet' : ''}" d="${d}"/>`).join('')}`
+    : `<path class="seen" d="${KC.seen}"/>`}
+    ${zeige ? ring(KC.punkte[zeige], 22) : see ? ring(KC.seenPunkte[see], 26) : ''}
   </svg>`;
+}
+/* Wie heisst, was man auf der Karte angetippt hat? (Kanton aus dem Modul Schweiz, sonst aus der Aufgabe) */
+function kartenName(a, k) {
+  if (a.karte && a.karte.namen) return { name: a.karte.namen[k], ton: a.karte.toene && a.karte.toene[k] };
+  const kt = K.MODULE.find(m => m.id === 'schweiz').daten.KT[k];
+  return { name: kt && kt.name, ton: `ch_k_${k}` };
 }
 
 /* ================================================================ Runde */
@@ -411,7 +428,7 @@ function starteUebung(uid) {
 function figurBild(pose) {
   const f = Q && Q.t.freund;
   if (f) return img(pose === 'jubel' ? f.jubel : f.hallo);
-  return img({ jubel: 'mungg_jubel', mut: 'mungg_mut', denkt: 'mungg_denkt' }[pose] || 'mungg_denkt');
+  return img({ jubel: 'figur_jubel', mut: 'figur_mut', denkt: 'figur_denkt' }[pose] || 'figur_denkt');
 }
 function figur(pose) {
   const el = document.getElementById('runde-figur');
@@ -420,7 +437,7 @@ function figur(pose) {
   if (!reduced()) { el.classList.remove('bounce'); void el.offsetWidth; el.classList.add('bounce'); }
 }
 function rundeHTML() {
-  return `<div class="screen runde" style="${farben(Q.t.farbe)}">
+  return `<div class="screen runde" ${themaStil(Q.t)}>
     <header class="runde-kopf">
       <button class="icon-btn" data-act="abbrechen" aria-label="Beenden">${ICON.close}</button>
       <div class="fortschritt" aria-hidden="true"><i id="fortschritt"></i></div>
@@ -468,12 +485,12 @@ function antwortHTML(a) {
     const bilder = a.optionen.some(o => o.bild || (o.wappen && !o.klein) || o.uhr || o.zahl != null || o.schild || o.digital);
     const sp = a.spalten || (bilder ? (a.optionen.length === 3 ? 3 : 2) : 1);
     return `<div class="optionen sp-${sp} n-${a.optionen.length}${bilder ? ' mit-inhalt' : ''}">${a.optionen.map(o => `<button class="opt${o.klein ? ' klein' : ''}" data-act="wahl" data-id="${esc(o.id)}">
-      ${inhaltHTML(o)}${o.text ? `<span class="opt-text${o.fremd ? ' fremd' : ''}">${esc(o.text)}</span>` : ''}</button>`).join('')}</div>`;
+      ${inhaltHTML(o)}${o.text ? `<span class="opt-text${o.fremd ? ' fremd' : ''}">${esc(o.text)}${schriftHTML(o)}</span>` : ''}</button>`).join('')}</div>`;
   }
-  if (a.art === 'karte') return `<div class="karte-box">${karteSVG({ tippen: true })}<span class="karte-name" id="karte-name"></span></div>`;
+  if (a.art === 'karte') return `<div class="karte-box">${karteSVG({ tippen: true, ebene: a.karte && a.karte.ebene })}<span class="karte-name" id="karte-name"></span></div>`;
   if (a.art === 'reihe') {
     return `<div class="reihe-plaetze" id="plaetze">${a.reihenfolge.map((_, i) => `<span class="platz" data-i="${i}">${i + 1}</span>`).join('')}</div>
-      <div class="reihe-teile" id="teile">${a.teile.map(x => `<button class="teil${x.fremd ? ' fremd' : ''}" data-act="teil" data-id="${esc(x.id)}">${esc(x.text)}</button>`).join('')}</div>`;
+      <div class="reihe-teile" id="teile">${a.teile.map(x => `<button class="teil${x.fremd ? ' fremd' : ''}" data-act="teil" data-id="${esc(x.id)}">${esc(x.text)}${schriftHTML(x)}</button>`).join('')}</div>`;
   }
   if (a.art === 'uhr') {
     const s = a.ziel.h % 12 === 0 && a.ziel.m === 0 ? { h: 3, m: 0 } : { h: 12, m: 0 };
@@ -519,7 +536,7 @@ function falsch(el, extra) {
     figur('mut');
     rueck('fast', `<span>${extra ? `${esc(extra)} ` : ''}Fast! Versuch es nochmal.</span>`);
     const satz = a.art === 'uhr' ? 'uhr_falsch' : a.art === 'reihe' ? 'reihe_falsch' : SATZ.fast();
-    sprich(extra && a.art === 'karte' && Q.getippt ? ['ch_das_ist', `ch_k_${Q.getippt}`, { pause: 250 }, satz] : [satz]);
+    sprich(extra && a.art === 'karte' && Q.getippt ? [(a.karte && a.karte.dasIst) || 'ch_das_ist', kartenName(a, Q.getippt).ton, { pause: 250 }, satz] : [satz]);
     return;
   }
   Q.versuch = 2;
@@ -533,7 +550,7 @@ function zeigeLoesung() {
   if (a.art === 'wahl') {
     document.querySelectorAll('#antwort .opt').forEach(b => { b.disabled = true; b.classList.toggle('loesung', b.dataset.id === a.richtig); });
   } else if (a.art === 'karte') {
-    const p = document.querySelector(`#antwort .karte path[data-k="${a.richtig}"]`);
+    const p = document.querySelector(`#antwort .karte path[data-${a.karte && a.karte.ebene === 'see' ? 'see' : 'k'}="${a.richtig}"]`);
     if (p) p.classList.add('loesung');
   } else if (a.art === 'reihe') {
     const pl = document.getElementById('plaetze');
@@ -564,28 +581,29 @@ function waehle(id, btn) {
   btn.disabled = true;
   falsch(btn);
 }
-/* ---- Karte: auf den Kanton tippen (kleine Kantone: auch knapp daneben zählt) ---- */
+/* ---- Karte: auf den Kanton (oder See) tippen – kleine zählen auch knapp daneben ---- */
 function karteTipp(e) {
   const a = aktuell(), svg = e.target.closest('svg.karte');
   if (!svg || Q.gesperrt) return;
-  const KC = window.KARTE_CH, ctm = svg.getScreenCTM();
-  let k = (e.target.closest('[data-k]') || {}).dataset;
-  k = k && k.k;
+  const KC = window.KARTE_CH, ctm = svg.getScreenCTM(), see = a.karte && a.karte.ebene === 'see', attr = see ? 'see' : 'k';
+  const punkte = see ? KC.seenPunkte : KC.punkte;
+  let k = (e.target.closest(`[data-${attr}]`) || { dataset: {} }).dataset[attr] || '';
+  if (see && k && !a.karte.namen[k]) k = '';                        // kleine Seen, die nicht dran sind, zählen nicht
   if (ctm) {
-    const pt = new DOMPoint(e.clientX, e.clientY).matrixTransform(ctm.inverse()), z = KC.punkte[a.richtig];
+    const pt = new DOMPoint(e.clientX, e.clientY).matrixTransform(ctm.inverse()), z = punkte[a.richtig];
     const px = Math.hypot(pt.x - z[0], pt.y - z[1]) * ctm.a;           // Abstand in Bildschirm-Pixeln
     if (px < Math.max(18, z[2] * ctm.a)) k = a.richtig;
   }
   if (!k) return;
-  const pfad = svg.querySelector(`path[data-k="${k}"]`);
+  const pfad = svg.querySelector(`path[data-${attr}="${k}"]`);
   if (k === a.richtig) { pfad.classList.add('richtig'); richtig(pfad); return; }
-  const kt = window.Kern.MODULE.find(m => m.id === 'schweiz').daten.KT[k];
+  const { name } = kartenName(a, k);
   pfad.classList.add('falsch');
   setTimeout(() => pfad.classList.remove('falsch'), 1400);
   const nm = document.getElementById('karte-name');
-  if (nm) { nm.textContent = `Das ist ${kt.name}`; nm.classList.add('zeigen'); }
+  if (nm) { nm.textContent = `Das ist ${see ? 'der ' : ''}${name}`; nm.classList.add('zeigen'); }
   Q.getippt = k;
-  falsch(pfad, `Das ist ${kt.name}.`);
+  falsch(pfad, `Das ist ${see ? 'der ' : ''}${name}.`);
 }
 /* ---- Reihe: der Reihe nach antippen ---- */
 function reiheTipp(id, btn) {
@@ -721,9 +739,9 @@ function zeigeErgebnis(res) {
 }
 function ergebnisHTML(res) {
   const { t } = K.finde(res.m, res.t), f = t.freund;
-  return `<div class="screen ergebnis" style="${farben(t.farbe)}">
+  return `<div class="screen ergebnis" ${themaStil(t)}>
     <div class="erg-karte">
-      <img class="erg-figur" src="${img(f ? f.jubel : 'mungg_jubel')}" alt="">
+      <img class="erg-figur" src="${img(f ? f.jubel : 'figur_jubel')}" alt="">
       <h1>${res.sterne === 3 ? 'Wow, perfekt!' : res.sterne >= 1 ? 'Geschafft!' : 'Gut gemacht!'}</h1>
       ${sterneHTML(res.sterne, 'gross')}
       <p class="erg-text">${res.art === 'memory' ? `Alle ${res.total} Paare gefunden${res.erst < res.total ? ` – ${res.total - res.erst} davon erst beim zweiten Mal` : ' – ganz ohne Fehler'}.`
@@ -749,14 +767,14 @@ function starteMemory(m, t, u) {
   sprich('memory_start');
 }
 function memoryHTML() {
-  return `<div class="screen memory" style="${farben(M.t.farbe)}">
+  return `<div class="screen memory" ${themaStil(M.t)}>
     <header class="runde-kopf">
       <button class="icon-btn" data-act="abbrechen" aria-label="Beenden">${ICON.close}</button>
       <h1 class="bar-title">${esc(M.u.titel)}</h1>
       <span class="zaehler" id="mem-zaehler">${M.gefunden.size}/${M.paare}</span>
     </header>
     <div class="mem-grid" id="mem-grid">${M.karten.map((k, i) => `<button class="mem-karte" data-act="mem" data-i="${i}" aria-label="Karte ${i + 1}">
-      <span class="mem-vorne">${inhaltHTML(k.x)}${k.x.text ? `<span class="opt-text${k.x.fremd ? ' fremd' : ''}">${esc(k.x.text)}</span>` : ''}</span>
+      <span class="mem-vorne">${inhaltHTML(k.x)}${k.x.text ? `<span class="opt-text${k.x.fremd ? ' fremd' : ''}">${esc(k.x.text)}${schriftHTML(k.x)}</span>` : ''}</span>
       <span class="mem-hinten"></span></button>`).join('')}</div>
     <div class="rueck" id="rueck" aria-live="polite"></div>
   </div>`;
@@ -845,7 +863,7 @@ function oeffneEntdecken() {
 }
 function entdeckenHTML() {
   const { t } = mt();
-  return `<div class="screen entdecken" style="${farben(t.farbe)}">
+  return `<div class="screen entdecken" ${themaStil(t)}>
     ${kopfHTML(`${t.sprache ? flagHTML(t.sprache) : ''}Entdecken`, 'zum-thema')}
     <div class="lernkarte" id="lernkarte"></div>
     <nav class="karten-nav">
@@ -862,7 +880,7 @@ function entdeckenZeigen() {
   box.innerHTML = `<div class="lk-bild${k.karte && k.wappen ? ' doppelt' : ''}">${bild ? inhaltHTML(Object.assign({}, k, { karte: k.karte, zahl: k.zahl }), true) : ''}
       ${k.liste ? `<ol class="lk-liste">${k.liste.map(x => `<li>${esc(x)}</li>`).join('')}</ol>` : ''}</div>
     <div class="lk-text">
-      <h2 class="${k.fremd ? 'fremd' : ''}">${esc(k.titel)}<button class="snd" data-act="karte-ton" aria-label="Anhören">${ICON.speaker}</button></h2>
+      <h2 class="${k.fremd ? 'fremd' : ''}"><span>${esc(k.titel)}${schriftHTML(k)}</span><button class="snd" data-act="karte-ton" aria-label="Anhören">${ICON.speaker}</button></h2>
       ${k.unter ? `<p class="lk-unter">${esc(k.unter)}</p>` : ''}
       ${k.zeilen ? `<dl>${k.zeilen.map(([a, b]) => `<dt>${esc(a)}</dt><dd>${esc(b)}</dd>`).join('')}</dl>` : ''}
       ${k.text ? `<p class="lk-info">${esc(k.text)}</p>` : ''}
@@ -1035,7 +1053,7 @@ function seiteHTML(p, seite) {
   if (a.art === 'umschlag') {
     return `<div class="page ${seite} umschlag" data-act="buch-auf" style="background-image:url(${img('buch_umschlag')})">
       <span class="u-titel"><small>Mein</small><b>Reise-Sammelbuch</b></span>
-      <span class="u-bild"><img src="${img('mungg_hallo')}" alt=""></span>
+      <span class="u-bild"><img src="${img('figur_hallo')}" alt=""></span>
       <span class="u-name">${esc(P().name)}</span>
     </div>`;
   }
@@ -1044,7 +1062,7 @@ function seiteHTML(p, seite) {
     inhalt = `<div class="exlibris-rahmen"><img src="${img(`avatar_${P().avatar}`)}" alt=""><span class="ex-klein">Dieses Buch gehört</span>
       <span class="ex-name">${esc(P().name) || '…………'}</span><span class="ex-deko">${ICON.star}${ICON.star}${ICON.star}</span></div>`;
   } else if (a.art === 'titel') {
-    inhalt = `<div class="titel-inhalt"><span class="t-klein">Mein</span><span class="t-gross">Reise-Sammelbuch</span><img src="${img('mungg_jubel')}" alt="">
+    inhalt = `<div class="titel-inhalt"><span class="t-klein">Mein</span><span class="t-gross">Reise-Sammelbuch</span><img src="${img('figur_jubel')}" alt="">
       <span class="t-text">Zieh deine Sticker von unten auf eine Seite und kleb sie ein, wo du willst. Tippst du einen an, kannst du ihn drehen oder ablösen.</span></div>`;
   } else {
     stil = ` style="background-image:url(${img('seite_' + SZENEN[a.szene][0])})"`;
@@ -1062,7 +1080,7 @@ function zeichneStapel() {
   t.innerHTML = frei.length
     ? `<div class="tray-kopf"><b>Deine Sticker (${frei.length})</b><span>Nach oben auf eine Seite ziehen oder antippen</span></div>
       <div class="tray-row">${frei.map(stapelKnopfHTML).join('')}</div>`
-    : `<p class="tray-leer">${buchAlle().length ? 'Alle deine Sticker sind eingeklebt. Neue bekommst du auf deiner Lernreise.' : 'Noch keine Sticker. Übe mit Mungg – dann bekommst du den ersten!'}</p>`;
+    : `<p class="tray-leer">${buchAlle().length ? 'Alle deine Sticker sind eingeklebt. Neue bekommst du auf deiner Lernreise.' : 'Noch keine Sticker. Übe mit Gian – dann bekommst du den ersten!'}</p>`;
 }
 /* Stapel ohne ihn neu zu zeichnen: einen Sticker herausnehmen / zurücklegen (bild = sein <img>, wird wiederverwendet) */
 function stapelWeg(s) {
@@ -1407,7 +1425,7 @@ function settingsHTML() {
       <button class="btn" data-act="wer">${ICON.users}<span>Kind wechseln</span></button>
     </section>
     <section class="set-group"><h3>Ton</h3>
-      ${sw('voice', 'Mungg spricht', 'Fragen vorlesen, loben und helfen')}
+      ${sw('voice', 'Gian spricht', 'Fragen vorlesen, loben und helfen')}
       ${sw('sounds', 'Klänge')}
       <button class="btn" data-act="test-sound">${ICON.speaker}<span>Ton testen</span></button>
     </section>
@@ -1416,7 +1434,7 @@ function settingsHTML() {
         : 'Die Lernreise läuft auch ohne Internet, sobald sie einmal geladen ist. Im Browser-Menü kann man sie als App installieren.'}</p>
     </section>
     <p class="version">Lernreise · Stand ${esc(window.BUILD || 'dev')} · Bilder: OpenAI · Stimmen: ElevenLabs · Wappen: Wikimedia Commons (gemeinfrei) ·
-      Karte: BFS/swisstopo (swiss-maps) · Schrift: Nunito (SIL OFL)</p>
+      Karte: BFS/swisstopo (swiss-maps), Flüsse © OpenStreetMap-Mitwirkende · Schriften: Nunito, Andika (SIL OFL)</p>
   </div>`;
 }
 const confirmHTML = (title, text, yes, act) => `<div class="sheet-head"><h2>${title}</h2></div><div class="sheet-body"><p class="confirm-text">${text}</p>
@@ -1461,7 +1479,7 @@ function onClick(e) {
   if (!b || b.disabled) return;
   const act = b.dataset.act;
   switch (act) {
-    case 'mungg': {
+    case 'gian': {
       sfx.tap();
       const t = b.querySelector('img');
       if (t && !reduced()) { t.classList.remove('bounce'); void t.offsetWidth; t.classList.add('bounce'); }
@@ -1588,7 +1606,7 @@ if (!P()) view = { name: 'wer' };
 try { history.replaceState({ name: view.name }, ''); } catch (e) { /* file:// */ }
 render();
 if (!S.profile.length) setTimeout(() => profilOeffnen(null), 400);
-['mungg_denkt', 'mungg_jubel', 'mungg_mut'].forEach(n => { new Image().src = img(n); });
+['figur_denkt', 'figur_jubel', 'figur_mut'].forEach(n => { new Image().src = img(n); });
 
 if ('serviceWorker' in navigator && window.BUILD !== 'dev' && (location.protocol === 'https:' || ['localhost', '127.0.0.1'].includes(location.hostname))) {
   const hadController = !!navigator.serviceWorker.controller;
