@@ -146,9 +146,8 @@
       // Namen ohne Artikel: «die Saane», «die Limmat» klangen am Anfang wie «gi…» (Lautschrift-Prüfung 2026-11-02)
       ...MEERE.map(m => [`ws_meer_${m.id}`, 'gian', `${m.name}.`]),
       ...SEEN.map(x => [seeTon(x), 'gian', `${x.name}.`]),
-      // Flüsse mit Ausrufezeichen: «Thur.» las die Stimme als «Donnerstag» (engl. Thur.), «Linth.» wie «Linz»
-      // «Thur!» klang wie «Sir», «Rhone!» französisch – fürs Vorlesen deutsch geschrieben
-      ...FLUESSE.map(x => [flussTon(x), 'gian', `${{ thur: 'Tuhr', rhone: 'Rohne' }[x.id] || x.name}!`]),
+      // Flüsse: früher mit «!» und «Tuhr», «Rohne» – allein klangen sie trotzdem englisch («Tour»); seit 2026-11-05 im Satz gesprochen
+      ...FLUESSE.map(x => [flussTon(x), 'gian', `${x.name}.`]),          // im Satz gesprochen (stimme.py, NAMEN)
       ...SEEN.map(x => [`ws_info_${x.id}`, 'gian', sag(x.info)]),
       ...FLUESSE.map(x => [`ws_info_${x.id}`, 'gian', sag(x.info)]),
     ],

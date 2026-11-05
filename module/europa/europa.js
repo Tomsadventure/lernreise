@@ -55,11 +55,11 @@
     ['mk', 'Nordmazedonien', '', '', 'Skopje', 3, 'Mazedonisch, Albanisch', 'In Nordmazedonien liegt der Ohridsee, einer der ältesten Seen der Welt.'],
     ['al', 'Albanien', '', '', 'Tirana', 3, 'Albanisch', 'Auf der Flagge von Albanien ist ein schwarzer Adler mit zwei Köpfen.'],
   ];
-  // so liest Gian es vor. «Rom.» hörten die Spracherkennungen als «Raum» (darum «Rohm!» wie «Rohne» bei den Flüssen). eu_h_ch ist eine
-  // Kopie von ch_h_be (Modul Schweiz): neue Aufnahmen von «Bern» hörten beide als «burn», ch_h_be als «Bern» und «Bärn» (2026-11-02).
-  const HAUPT_GESPROCHEN = { md: 'Kischinau.', me: 'Podgoritza.', it: 'Rohm!' };
+  // so liest Gian es vor (Namen spricht er im Satz, stimme.py → NAMEN; geprüft mit laute.py)
+  const HAUPT_GESPROCHEN = { md: 'Kischinau.', me: 'Podgoritza.' };
+  const MEHRZAHL = new Set(['nl']);                 // «die Niederlande»: Wo liegen …, Welche Flagge haben …, Das sind …
   const LISTE = DATEN.map(([id, name, artikel, dativ, haupt, stufe, sprachen, info]) =>
-    ({ id, name, mit: artikel || name, dativ: dativ || name, haupt, stufe, sprachen, info }));
+    ({ id, name, mit: artikel || name, dativ: dativ || name, haupt, stufe, sprachen, info, mz: MEHRZAHL.has(id) }));
   const LAND = Object.fromEntries(LISTE.map(l => [l.id, l]));
   const nameTon = l => `eu_l_${l.id}`;
   const hauptTon = l => `eu_h_${l.id}`;
@@ -73,7 +73,8 @@
     .sort((a, b) => a[1] - b[1]).slice(0, n).map(a => a[0]);
   /* Auf der Karte antippen: winzige Länder (Vatikan, Monaco …) erst für Profis */
   const tippbar = s => pool(s).filter(l => s === 3 || KARTE.punkte[l.id][2] > 8);
-  const KARTE_TIPPEN = { welt: 'eu', namen: Object.fromEntries(LISTE.map(l => [l.id, l.mit])), toene: Object.fromEntries(LISTE.map(l => [l.id, nameTon(l)])) };
+  const KARTE_TIPPEN = { welt: 'eu', namen: Object.fromEntries(LISTE.map(l => [l.id, l.mit])), toene: Object.fromEntries(LISTE.map(l => [l.id, nameTon(l)])),
+    mehrzahl: [...MEHRZAHL], dasSind: 'eu_das_sind' };
 
   /* --------------------------------------------------------- Aufgaben */
   const flaggeErkennen = (s, R, n = LAENGE[s - 1]) => R.reihe(pool(s), n).map(l => K.wahl({
@@ -82,7 +83,7 @@
     loesung: { text: `Das ist die Flagge von ${l.dativ}.`, ton: ['richtig_ist', nameTon(l)] },
   }));
   const welcheFlagge = (s, R, n = LAENGE[s - 1]) => R.reihe(pool(s), n).map(l => K.wahl({
-    frage: { text: `Welche Flagge hat ${l.mit}?`, ton: ['eu_frage_flagge_von', nameTon(l)] },
+    frage: { text: `Welche Flagge ${l.mz ? 'haben' : 'hat'} ${l.mit}?`, ton: [l.mz ? 'eu_frage_flagge_von_mz' : 'eu_frage_flagge_von', nameTon(l)] },
     richtig: l, pool: pool(s), n: WAHL[s - 1], R, zeige: x => ({ flagge: x.id }), andere: s > 1 ? nah(l, s) : [],
     loesung: { text: `So sieht die Flagge von ${l.dativ} aus.`, ton: ['richtig_ist', nameTon(l)] }, spalten: WAHL[s - 1] === 3 ? 3 : 2,
   }));
@@ -101,12 +102,12 @@
   const karteZeigen = (s, R, n = LAENGE[s - 1]) => R.reihe(pool(s), n).map(l => K.wahl({
     frage: { text: 'Welches Land leuchtet auf der Karte?', ton: ['eu_frage_karte'], karte: { welt: 'eu', zeige: l.id } },
     richtig: l, pool: pool(s), n: WAHL[s - 1], R, zeige: x => (s < 3 ? { text: x.name, flagge: x.id, klein: true } : { text: x.name }),
-    andere: s > 1 ? nah(l, s, s === 2 ? 6 : 3) : [], loesung: { text: `Das ist ${l.mit}.`, ton: ['richtig_ist', nameTon(l)] },
+    andere: s > 1 ? nah(l, s, s === 2 ? 6 : 3) : [], loesung: { text: `Das ${l.mz ? 'sind' : 'ist'} ${l.mit}.`, ton: ['richtig_ist', nameTon(l)] },
   }));
   const karteTippen = (s, R, n = LAENGE[s - 1]) => R.reihe(tippbar(s), n).map(l => ({
     art: 'karte', karte: KARTE_TIPPEN,
-    frage: { text: `Wo liegt ${l.mit}?`, ton: ['eu_frage_wo', nameTon(l)], flagge: s < 3 ? l.id : undefined, klein: true },
-    richtig: l.id, loesung: { text: `Hier liegt ${l.mit}.`, ton: ['eu_hier_liegt', nameTon(l)] },
+    frage: { text: `Wo ${l.mz ? 'liegen' : 'liegt'} ${l.mit}?`, ton: [l.mz ? 'eu_frage_wo_mz' : 'eu_frage_wo', nameTon(l)], flagge: s < 3 ? l.id : undefined, klein: true },
+    richtig: l.id, loesung: { text: `Hier ${l.mz ? 'liegen' : 'liegt'} ${l.mit}.`, ton: [l.mz ? 'eu_hier_liegen' : 'eu_hier_liegt', nameTon(l)] },
   }));
   /* Europa-Profi: alles gemischt */
   const profi = (s, R) => Array.from({ length: 15 }, () => R.wahl([flaggeErkennen, welcheFlagge, hauptstaedte, karteZeigen, karteTippen])(s, R, 1)[0]);
@@ -147,6 +148,10 @@
       ['eu_frage_karte', 'gian', 'Welches Land leuchtet auf der Karte?'],
       ['eu_frage_wo', 'gian', 'Wo liegt …'],
       ['eu_hier_liegt', 'gian', 'Hier liegt …'],
+      ['eu_frage_flagge_von_mz', 'gian', 'Welche Flagge haben …'],
+      ['eu_frage_wo_mz', 'gian', 'Wo liegen …'],
+      ['eu_hier_liegen', 'gian', 'Hier liegen …'],
+      ['eu_das_sind', 'gian', 'Das sind …'],
       ...LISTE.map(l => [nameTon(l), 'gian', `${gross(l.mit)}.`]),
       ...LISTE.map(l => [hauptTon(l), 'gian', HAUPT_GESPROCHEN[l.id] || `${l.haupt}.`]),
       ...LISTE.map(l => [`eu_info_${l.id}`, 'gian', l.info]),

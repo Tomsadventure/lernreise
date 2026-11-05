@@ -412,15 +412,25 @@ function karteSVG({ zeige, see, fluss, klein = false, tippen = false, ebene, wel
     ${zeige ? ring(KC.punkte[zeige], 22) : see ? ring(KC.seenPunkte[see], 26) : ''}
   </svg>`;
 }
-/* Europakarte (module/europa/karte.js): Meer, übriges Land grau, die Länder des Moduls; um kleine Länder ein Ring */
+/* Europakarte (module/europa/karte.js) wie eine gemalte Landkarte (2026-11-05, Wunsch des Benutzers: «liebevoller»): Meer mit Verlauf,
+   helles Flachwasser an den Küsten (dieselben Umrisse breit weiss nachgezogen, darüber das Land), Länder in 5 Pastellfarben (Nachbarn nie
+   gleich, KE.farbe), übriges Land sandfarben, ein Rahmen und im Meer Windrose, Wal, Schiff und Gians Ballon (nicht auf kleinen Karten).
+   Die Bilder stehen dort, wo Scripts/europa.mjs genug freies Meer gefunden hat. */
+const DEKO_EU = [['deko_kompass', 44, 556, 92, 90], ['deko_wal', 176, 152, 112, 70], ['deko_schiff', 308, 140, 62, 62], ['deko_ballon', 104, 12, 52, 76]];
 function europaSVG({ zeige, klein, tippen }) {
   const KE = window.KARTE_EU;
   if (!KE) return '';
-  const p = zeige && KE.punkte[zeige];
-  return `<svg class="karte europa${klein ? ' klein' : ''}${tippen ? ' tippen' : ''}" viewBox="0 0 ${KE.breite} ${KE.hoehe}" role="img" aria-label="Karte von Europa">
-    <rect class="meer" width="${KE.breite}" height="${KE.hoehe}"/><path class="rest" d="${KE.rest}"/>
-    ${Object.entries(KE.laender).map(([k, d]) => `<path data-k="${k}" class="kt${k === zeige ? ' leuchtet' : ''}" d="${d}"/>`).join('')}
+  const n = ++karteNr, p = zeige && KE.punkte[zeige], { breite: B, hoehe: H } = KE;
+  const umrisse = `<path d="${KE.rest}"/>${Object.values(KE.laender).map(d => `<path d="${d}"/>`).join('')}`;
+  return `<svg class="karte europa${klein ? ' klein' : ''}${tippen ? ' tippen' : ''}" viewBox="0 0 ${B} ${H}" role="img" aria-label="Karte von Europa">
+    <defs><linearGradient id="meer-${n}" x1="0" y1="0" x2=".35" y2="1"><stop offset="0" stop-color="#D3EDF8"/><stop offset="1" stop-color="#9DCFEA"/></linearGradient></defs>
+    <rect class="meer" width="${B}" height="${H}" fill="url(#meer-${n})"/>
+    ${klein ? '' : `<g class="welle w2">${umrisse}</g><g class="welle w1">${umrisse}</g>`}
+    ${klein ? '' : DEKO_EU.map(([b, x, y, w, h]) => `<image class="deko" href="${img(b)}" x="${x}" y="${y}" width="${w}" height="${h}"/>`).join('')}
+    <path class="rest" d="${KE.rest}"/>
+    ${Object.entries(KE.laender).map(([k, d]) => `<path data-k="${k}" class="kt f${KE.farbe[k]}${k === zeige ? ' leuchtet' : ''}" d="${d}"/>`).join('')}
     ${p && p[2] < 14 ? `<circle class="ring" cx="${p[0]}" cy="${p[1]}" r="${Math.max(14, p[2] * 2)}"/>` : ''}
+    <rect class="rahmen" x="4" y="4" width="${B - 8}" height="${H - 8}" rx="16"/><rect class="rahmen-linie" x="13" y="13" width="${B - 26}" height="${H - 26}" rx="10"/>
   </svg>`;
 }
 /* Wie heisst, was man auf der Karte angetippt hat? (Kanton aus dem Modul Schweiz, sonst aus der Aufgabe) */
@@ -551,7 +561,8 @@ function falsch(el, extra) {
     figur('mut');
     rueck('fast', `<span>${extra ? `${esc(extra)} ` : ''}Fast! Versuch es nochmal.</span>`);
     const satz = a.art === 'uhr' ? 'uhr_falsch' : a.art === 'reihe' ? 'reihe_falsch' : SATZ.fast();
-    sprich(extra && a.art === 'karte' && Q.getippt ? [(a.karte && a.karte.dasIst) || 'ch_das_ist', kartenName(a, Q.getippt).ton, { pause: 250 }, satz] : [satz]);
+    const mz = a.karte && (a.karte.mehrzahl || []).includes(Q.getippt);          // «Das sind die Niederlande»
+    sprich(extra && a.art === 'karte' && Q.getippt ? [mz ? a.karte.dasSind : (a.karte && a.karte.dasIst) || 'ch_das_ist', kartenName(a, Q.getippt).ton, { pause: 250 }, satz] : [satz]);
     return;
   }
   Q.versuch = 2;
@@ -616,9 +627,10 @@ function karteTipp(e) {
   pfad.classList.add('falsch');
   setTimeout(() => pfad.classList.remove('falsch'), 1400);
   const nm = document.getElementById('karte-name');
-  if (nm) { nm.textContent = `Das ist ${see ? 'der ' : ''}${name}`; nm.classList.add('zeigen'); }
+  const ist = (a.karte && (a.karte.mehrzahl || []).includes(k)) ? 'Das sind' : 'Das ist';
+  if (nm) { nm.textContent = `${ist} ${see ? 'der ' : ''}${name}`; nm.classList.add('zeigen'); }
   Q.getippt = k;
-  falsch(pfad, `Das ist ${see ? 'der ' : ''}${name}.`);
+  falsch(pfad, `${ist} ${see ? 'der ' : ''}${name}.`);
 }
 /* ---- Reihe: der Reihe nach antippen ---- */
 function reiheTipp(id, btn) {

@@ -1,5 +1,5 @@
 /* Offline: hält alle Dateien eines App-Stands auf dem Gerät. VERSION und FILES setzt Scripts/bauen.py ein (wie beim Rechentiger). */
-const VERSION = '2026-11-02-0233cd4';
+const VERSION = '2026-11-05-831d622';
 const FILES = [
   './',
   'app.js',
@@ -174,12 +174,15 @@ const FILES = [
   'audio/es_z_8.mp3',
   'audio/es_z_9.mp3',
   'audio/es_zahl_wie.mp3',
+  'audio/eu_das_sind.mp3',
   'audio/eu_frage_flagge.mp3',
   'audio/eu_frage_flagge_von.mp3',
+  'audio/eu_frage_flagge_von_mz.mp3',
   'audio/eu_frage_hauptstadt.mp3',
   'audio/eu_frage_karte.mp3',
   'audio/eu_frage_land_von.mp3',
   'audio/eu_frage_wo.mp3',
+  'audio/eu_frage_wo_mz.mp3',
   'audio/eu_h_ad.mp3',
   'audio/eu_h_al.mp3',
   'audio/eu_h_at.mp3',
@@ -226,6 +229,7 @@ const FILES = [
   'audio/eu_h_ua.mp3',
   'audio/eu_h_va.mp3',
   'audio/eu_h_xk.mp3',
+  'audio/eu_hier_liegen.mp3',
   'audio/eu_hier_liegt.mp3',
   'audio/eu_info_ad.mp3',
   'audio/eu_info_al.mp3',
@@ -949,6 +953,10 @@ const FILES = [
   'img/buch_umschlag.webp',
   'img/daan_hallo.webp',
   'img/daan_jubel.webp',
+  'img/deko_ballon.webp',
+  'img/deko_kompass.webp',
+  'img/deko_schiff.webp',
+  'img/deko_wal.webp',
   'img/figur_buch.webp',
   'img/figur_denkt.webp',
   'img/figur_europa.webp',
