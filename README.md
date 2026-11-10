@@ -1,12 +1,7 @@
-# Lernreise
+# Lernreise ist umgezogen
 
-Lern-App für Kinder von 7 bis 11 mit Gian, dem Steinbock: die Schweiz (26 Kantone, Wappen, Hauptorte, Karte), Seen und Flüsse,
-Europa (46 Länder, Flaggen, Hauptstädte), Uhr und Kalender und acht Sprachen (Französisch, Englisch, Italienisch, Spanisch,
-Holländisch, Chinesisch, Japanisch, Ungarisch). Jedes Kind
-hat sein eigenes Profil, Sticker-Album und Sammelbuch. Fürs iPad, iPhone und den PC; läuft auch ohne Internet (Safari → Teilen →
-«Zum Home-Bildschirm»).
+Die Lernreise (Lern-App mit Gian, dem Steinbock) liegt seit dem 10. November 2026 unter **https://lernreise.tomsadventure.ch**.
+Diese Seite leitet dorthin weiter und nimmt den Fortschritt der Kinder mit, der im Browser unter der alten Adresse liegt.
 
-Dieser Ordner wird von `Scripts/bauen.py` im Projekt `Lernreise` erzeugt – hier nichts von Hand ändern, es wird überschrieben.
-Bilder: OpenAI. Stimmen: ElevenLabs. Wappen: Wikimedia Commons (gemeinfrei). Karte: BFS/swisstopo, aufbereitet von swiss-maps
-(Interactive Things, BSD-3); Flüsse © OpenStreetMap-Mitwirkende (ODbL). Europakarte: Natural Earth (gemeinfrei).
-Flaggen: Flagpedia/flagcdn.com (gemeinfrei). Schriften «Nunito» und «Andika» unter der SIL Open Font License (`fonts/OFL.txt`, `fonts/OFL-Andika.txt`).
+Dieser Ordner wird von `Scripts/bauen.py --umzug` im Projekt `Lernreise` erzeugt (Quelle `umzug/`) – hier nichts von Hand ändern.
+Bild und Symbole: OpenAI.
